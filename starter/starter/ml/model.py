@@ -10,7 +10,7 @@ import numpy as np
 import pandas as pd
 
 
-def train_model(X_train: np.array, y_train: np.array) -> RandomForestClassifier:
+def train_classifier(X_train: np.array, y_train: np.array) -> RandomForestClassifier:
     """
     Trains a machine learning model and returns it.
 
@@ -54,8 +54,8 @@ def compute_model_metrics(y: np.array, preds: np.array) -> Tuple[float, float, f
     return precision, recall, fbeta
 
 
-def compute_slices(test_df: pd.core.frame.DataFrame, feature: str,
-                   y: np.array, preds: np.array) -> pd.core.frame.DataFrame:
+def compute_slices(test_df, feature: str,
+                   y: np.array, preds: np.array):
     """
     Computes the model metrics for a specific feature
 
