@@ -15,8 +15,8 @@ from ml.data import process_data
 from ml.model import train_classifier, compute_model_metrics, inference, compute_slices
 
 
-MODEL_PATH = Path(__name__).resolve().parent.parent / "model"
-DATA_PATH = Path(__name__).resolve().parent.parent / "data"
+MODEL_PATH = Path(__name__).resolve().parent / "model"
+DATA_PATH = Path(__name__).resolve().parent / "data"
 DATA_FILE = DATA_PATH / "census.csv"
 
 
