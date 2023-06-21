@@ -1,9 +1,10 @@
 """
-Script to create an API
+Script to create the census API
 Author: Moises Gonzalez
 Date: 20/Jun/2023
 """
 
+import uvicorn
 import pandas as pd
 import pickle
 from pathlib import Path
@@ -36,24 +37,25 @@ class Census(BaseModel):
     hours_per_week: int
     native_country: str
 
-    # TODO add valid values for each data
-
     class Config:
-        schema_extra = {"example": {"age": 35,
-                                    "workclass": "Private",
-                                    "fnlgt": 7777,
-                                    "education": "Some-college",
-                                    "education_num": 10,
-                                    "marital_status": "str",
-                                    "occupation": "Armed-Forces",
-                                    "relationship": "Wife",
-                                    "race": "Other",
-                                    "sex": "Male",
-                                    "capital_gain": 0,
-                                    "capital_loss": 0,
-                                    "hours_per_week": 40,
-                                    "native_country": "Holand-Netherlands"}
-                        }
+        schema_extra = {
+            "example": {
+                "age": 35,
+                "workclass": "Private",
+                "fnlgt": 7777,
+                "education": "Some-college",
+                "education_num": 10,
+                "marital_status": "Never-married",
+                "occupation": "Armed-Forces",
+                "relationship": "Not-in-family",
+                "race": "Other",
+                "sex": "Male",
+                "capital_gain": 2000,
+                "capital_loss": 0,
+                "hours_per_week": 40,
+                "native_country": "Holand-Netherlands"
+            }
+        }
 
 
 app = FastAPI(
@@ -87,16 +89,9 @@ async def predict(data: Census):
 
     """
 
-    input_data = {"workclass": data.age,
-                  "education": data.education,
-                  "marital_status": data.marital_status,
-                  "occupation": data.occupation,
-                  "relationship": data.relationship,
-                  "race": data.race,
-                  "sex": data.sex,
-                  "native_country": data.native_country}
-
-    input_dataframe = pd.DataFrame(input_data, index=[0])
+    input_dataframe = pd.DataFrame(
+        {key: val for key, val in data.dict().items()}, index=[0]
+    )
 
     features = ["workclass", "education", "marital_status", "occupation",
                 "relationship", "race", "sex", "native_country"]
@@ -120,3 +115,7 @@ async def predict(data: Census):
         input_dataframe["prediction"] = ">50k"
 
     return {"prediction": pred}
+
+if __name__ == "__main__":
+
+    uvicorn.run(app, host="127.0.0.1", port=7000)
