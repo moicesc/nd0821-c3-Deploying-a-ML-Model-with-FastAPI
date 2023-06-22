@@ -86,7 +86,7 @@ async def load_model():
 @app.post("/predictions/")
 async def predict(data: Census):
     """
-
+    Post method to handle live predictions
     """
 
     input_dataframe = pd.DataFrame(
