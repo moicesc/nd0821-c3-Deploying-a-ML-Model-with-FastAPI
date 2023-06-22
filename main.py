@@ -8,7 +8,7 @@ import uvicorn
 import pandas as pd
 import pickle
 from pathlib import Path
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI
 from pydantic import BaseModel
 from ml.data import process_data
 

@@ -25,7 +25,7 @@ MODEL_FILE = MODEL_PATH / "trained_model.pkl"
 
 logger = logging.getLogger(__name__)
 
-CAT_FEATURES = ["workclass", "education", "marital_status", "occupation",
+cat_features = ["workclass", "education", "marital_status", "occupation",
                 "relationship", "race", "sex", "native_country"]
 
 
@@ -63,7 +63,7 @@ def test_features_in_data(df):
     Test that the features are present in the data
     """
 
-    assert sorted(set(df.columns).intersection(CAT_FEATURES)) == sorted(CAT_FEATURES)
+    assert sorted(set(df.columns).intersection(cat_features)) == sorted(cat_features)
 
     logger.info("Features needed are present in the dataframe")
 
@@ -94,14 +94,14 @@ def test_inference_func(df):
                                    stratify=df["salary"])
 
     X_test, y_test, _encoder, _lb = process_data(test,
-                                                 categorical_features=CAT_FEATURES,
+                                                 categorical_features=cat_features,
                                                  label="salary",
                                                  training=False,
                                                  encoder=encoder,
                                                  lb=lb)
     logger.info("Test data loaded correctly: ENCODER and LB files are valid")
     try:
-        _preds = inference(model, X_test)
+        _ = inference(model, X_test)
         logger.info("Inference performed successfully")
     except Exception as err:
         logging.error("Inference function failed!")

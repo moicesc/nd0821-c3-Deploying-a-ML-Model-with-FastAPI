@@ -61,13 +61,13 @@ def train_model(datafile=DATA_FILE) -> None:
     pickle.dump(encoder, open(MODEL_PATH / "encoder.pkl", "wb"))
     pickle.dump(lb, open(MODEL_PATH / "label_binarizer.pkl", "wb"))
 
-    logger.info(f"Model evaluation")
+    logger.info("Model evaluation")
     preds = inference(model, X_test)
     precision, recall, fbeta = compute_model_metrics(y_test, preds)
 
     logging.info(f"\n\tprecision-> {precision}\n\trecall->{recall}\n\tfbeta->{fbeta}")
 
-    logger.info(f"Model metrics by slice")
+    logger.info("Model metrics by slice")
 
     for feature in cat_features:
         performance = compute_slices(test, feature, y_test, preds)

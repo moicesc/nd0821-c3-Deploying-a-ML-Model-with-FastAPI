@@ -25,7 +25,7 @@ def test_welcome():
     assert request.status_code == OK_STATUS_CODE
     assert request.json()["message"] == "Welcome!"
 
-    logger.info(f"Test for GET method: Welcome message PASSED")
+    logger.info("Test for GET method: Welcome message PASSED")
 
 
 def test_prediction_greater():
@@ -54,7 +54,7 @@ def test_prediction_greater():
     assert request.status_code == OK_STATUS_CODE
     assert request.json()["prediction"] == ">50k"
 
-    logger.info(f"Test for POST method: >50k prediction sample PASSED")
+    logger.info("Test for POST method: >50k prediction sample PASSED")
 
 
 def test_prediction_lower():
@@ -80,4 +80,4 @@ def test_prediction_lower():
     assert request.status_code == OK_STATUS_CODE
     assert request.json()["prediction"] == "<=50k"
 
-    logger.info(f"Test for POST method: <=50k prediction sample PASSED")
+    logger.info("Test for POST method: <=50k prediction sample PASSED")
