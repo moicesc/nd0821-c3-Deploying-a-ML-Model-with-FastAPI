@@ -39,16 +39,8 @@ def train_model(datafile=DATA_FILE) -> None:
     logger.info("Data Split")
     train, test = train_test_split(data, test_size=0.20, stratify=data["salary"])
 
-    cat_features = [
-        "workclass",
-        "education",
-        "marital_status",
-        "occupation",
-        "relationship",
-        "race",
-        "sex",
-        "native_country",
-    ]
+    cat_features = ["workclass", "education", "marital_status", "occupation",
+                    "relationship", "race", "sex", "native_country"]
 
     logger.info("Processing training data")
     X_train, y_train, encoder, lb = process_data(

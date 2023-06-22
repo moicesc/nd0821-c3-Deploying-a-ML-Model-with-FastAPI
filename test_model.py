@@ -7,27 +7,32 @@ Date: 15/Jun/2023
 import pytest
 import sys
 import logging
+import pickle
 import pandas as pd
-from typing import Tuple
+from sklearn.model_selection import train_test_split
 from pathlib import Path
+
+from ml.data import process_data
+from ml.model import inference
 
 
 MODEL_PATH = Path(__name__).resolve().parent / "model"
 DATA_PATH = Path(__name__).resolve().parent / "data"
 DATA_FILE = DATA_PATH / "census.csv"
-TRAIN_DATA_FILE = DATA_PATH / "train_df.csv"
-TEST_DATA_FILE = DATA_PATH / "test_df.csv"
 ENCODER_FILE = MODEL_PATH / "encoder.pkl"
 LB_FILE = MODEL_PATH / "label_binarizer.pkl"
 MODEL_FILE = MODEL_PATH / "trained_model.pkl"
 
 logger = logging.getLogger(__name__)
 
+CAT_FEATURES = ["workclass", "education", "marital_status", "occupation",
+                "relationship", "race", "sex", "native_country"]
 
 @pytest.fixture(scope="session")
 def df():
     """
     Fixture to load dataset
+
     Returns
     -------
     Pandas dataframe
@@ -35,20 +40,6 @@ def df():
     df = pd.read_csv(DATA_FILE)
 
     yield df
-
-
-@pytest.fixture(scope="session")
-def train_and_test_df() -> Tuple:
-    """
-    Fixture to load train and test data set
-    Returns
-    -------
-    Train and test dataset
-    """
-    train_df = pd.read_csv(TRAIN_DATA_FILE)
-    test_df = pd.read_csv(TEST_DATA_FILE)
-
-    return train_df, test_df
 
 
 def test_imported_data():
@@ -70,9 +61,10 @@ def test_features_in_data(df):
     """
     Test that the features are present in the data
     """
-    features = ["workclass", "education", "marital_status", "occupation",
-                "relationship", "race", "sex", "native_country"]
-    assert sorted(set(df.columns).intersection(features)) == sorted(features)
+
+    assert sorted(set(df.columns).intersection(CAT_FEATURES)) == sorted(CAT_FEATURES)
+
+    logger.info("Features needed are present in the dataframe")
 
 
 def test_model_files():
@@ -83,6 +75,36 @@ def test_model_files():
     assert ENCODER_FILE.exists(), f"Encoder file not found -> {ENCODER_FILE}"
     assert LB_FILE.exists(), f"Label binarizer file not found -> {LB_FILE}"
     assert MODEL_FILE.exists(), f"Model file not found -> {MODEL_FILE}"
+
+    logger.info("Model, Encoder and Label Binarizer files exist")
+
+
+def test_predictions(df):
+    """
+    Verify that the model files and inference function is valid
+    """
+    model = pickle.load(open(MODEL_FILE, "rb"))
+    encoder = pickle.load(open(ENCODER_FILE, "rb"))
+    lb = pickle.load(open(LB_FILE, "rb"))
+    logger.info("Model file loaded")
+
+    train, test = train_test_split(df,
+                                   test_size=0.20,
+                                   stratify=df["salary"])
+
+    X_test, y_test, _encoder, _lb = process_data(test,
+                                                 categorical_features=CAT_FEATURES,
+                                                 label="salary",
+                                                 training=False,
+                                                 encoder=encoder,
+                                                 lb=lb)
+    logger.info("Test data loaded correctly: ENCODER and LB files are valid")
+    try:
+        _preds = inference(model, X_test)
+        logger.info("Inference performed successfully")
+    except Exception as err:
+        logging.error("Inference function failed!")
+        raise err
 
 
 if __name__ == "__main__":

@@ -4,16 +4,16 @@ Author: Moises Gonzalez
 Date: 21/Jun/2023
 """
 
-import pytest
 import logging
 import json
 from fastapi.testclient import TestClient
 
 from main import app
 
-client = TestClient(app)
-
 OK_STATUS_CODE = 200
+
+logger = logging.getLogger(__name__)
+client = TestClient(app)
 
 
 def test_welcome():
@@ -24,6 +24,8 @@ def test_welcome():
     request = client.get("/")
     assert request.status_code == OK_STATUS_CODE
     assert request.json()["message"] == "Welcome!"
+
+    logger.info(f"Test for GET method: Welcome message PASSED")
 
 
 def test_prediction_greater():
@@ -52,6 +54,8 @@ def test_prediction_greater():
     assert request.status_code == OK_STATUS_CODE
     assert request.json()["prediction"] == ">50k"
 
+    logger.info(f"Test for POST method: >50k prediction sample PASSED")
+
 
 def test_prediction_lower():
     sample = {
@@ -75,3 +79,5 @@ def test_prediction_lower():
 
     assert request.status_code == OK_STATUS_CODE
     assert request.json()["prediction"] == "<=50k"
+
+    logger.info(f"Test for POST method: <=50k prediction sample PASSED")
