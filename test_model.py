@@ -28,6 +28,7 @@ logger = logging.getLogger(__name__)
 CAT_FEATURES = ["workclass", "education", "marital_status", "occupation",
                 "relationship", "race", "sex", "native_country"]
 
+
 @pytest.fixture(scope="session")
 def df():
     """
@@ -79,7 +80,7 @@ def test_model_files():
     logger.info("Model, Encoder and Label Binarizer files exist")
 
 
-def test_predictions(df):
+def test_inference_func(df):
     """
     Verify that the model files and inference function is valid
     """
