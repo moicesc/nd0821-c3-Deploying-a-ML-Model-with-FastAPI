@@ -19,7 +19,8 @@ logging.basicConfig(
 
 logger = logging.getLogger(__name__)
 
-url = "http://127.0.0.1:7000/predictions/"
+# local_url = "http://127.0.0.1:7000/predictions/"
+cloud_url = "https://census-mldevops.onrender.com/predictions/"
 
 sample = {
     "age": 35,
@@ -38,6 +39,8 @@ sample = {
     "native_country": "Holand-Netherlands"
   }
 
-response = requests.post(url, data=json.dumps(sample))
+response = requests.post(cloud_url, data=json.dumps(sample))
 
+logger.info(f"sending sample request to {cloud_url}")
+logger.info(f"Status code received -> {response.status_code}")
 logger.info(f"Sample prediction -> {response.json()}")
