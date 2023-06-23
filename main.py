@@ -17,6 +17,8 @@ ENCODER_FILE = MODEL_PATH / "encoder.pkl"
 LB_FILE = MODEL_PATH / "label_binarizer.pkl"
 MODEL_FILE = MODEL_PATH / "trained_model.pkl"
 
+global model, encoder, lb
+
 
 class Census(BaseModel):
     """
@@ -78,9 +80,15 @@ async def load_model():
     """
     Event handler that verify that the model files exists
     """
+    global model, encoder, lb
+
     assert MODEL_FILE.exists()
     assert ENCODER_FILE.exists()
     assert LB_FILE.exists()
+
+    model = pickle.load(open(MODEL_FILE, "rb"))
+    encoder = pickle.load(open(ENCODER_FILE, "rb"))
+    lb = pickle.load(open(LB_FILE, "rb"))
 
 
 @app.post("/predictions/")
@@ -95,10 +103,6 @@ async def predict(data: Census):
 
     features = ["workclass", "education", "marital_status", "occupation",
                 "relationship", "race", "sex", "native_country"]
-
-    model = pickle.load(open(MODEL_FILE, "rb"))
-    encoder = pickle.load(open(ENCODER_FILE, "rb"))
-    lb = pickle.load(open(LB_FILE, "rb"))
 
     X, _y, _encoder, _lb = process_data(X=input_dataframe,
                                         categorical_features=features,
