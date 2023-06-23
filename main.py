@@ -97,6 +97,8 @@ async def predict(data: Census):
     Post method to handle live predictions
     """
 
+    global model, encoder, lb
+
     input_dataframe = pd.DataFrame(
         {key: val for key, val in data.dict().items()}, index=[0]
     )
